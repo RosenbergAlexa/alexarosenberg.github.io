@@ -1,5 +1,3 @@
-# **CS-499 ePortfolio**  
-
 ## Overview
 
 

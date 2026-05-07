@@ -1,19 +1,19 @@
 # **CS-499 ePortfolio**  
 
-### Overview  
+## Overview
 
 
-### About Me  
+## About Me
 
 
-### Artifacts  
+## Artifacts
 
 
-### Enhancement One  
+## Enhancement One
 
 
-### Enhancement Two  
+## Enhancement Two
 
 
-### Enhancement Three  
+## Enhancement Three
 

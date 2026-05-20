@@ -1,6 +1,9 @@
-package com.Project2;
+package com.snhu.capstone;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import com.snhu.capstone.model.Dog;
+import com.snhu.capstone.model.Monkey;
 
 public class Driver {
 	private static ArrayList<Dog> dogList = new ArrayList<Dog>();

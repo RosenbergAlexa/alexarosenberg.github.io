@@ -1,0 +1,31 @@
+/* Label header */
+.label-title {
+   -fx-font-size: 30px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: bolder;
+   -fx-text-alignment: center;
+   -fx-text-fill: #61032c;
+}
+
+/* Button characteristics */
+.login-button {
+   -fx-background-color: #ede8e9;
+   -fx-text-fill: black;
+   -fx-text-size: 20px;
+   -fx-font-family: "Helvetica";
+   -fx-padding: 10px, 20px;
+   -fx-effect: dropshadow( three-pass-box, rgba( 0, 0, 0, 0.6 ), 5, 0.0, 0, 1 );
+}
+
+/* Hover state for buttons */
+.login-button:hover {
+   -fx-background-color: #c9a5b2;
+}
+
+/* Text fields for username and password */
+.text-entry {
+   -fx-color: black;
+   -fx-padding: 5px;
+   -fx-font-family: "Helvetica";
+   -fx-font-size: 14px;
+}

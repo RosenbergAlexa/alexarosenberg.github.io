@@ -1,4 +1,4 @@
-package com.snhu.capstone.model;
+package capstone.model;
 
 public class Dog extends RescueAnimal {
 

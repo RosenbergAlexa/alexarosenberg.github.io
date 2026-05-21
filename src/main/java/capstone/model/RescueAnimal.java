@@ -1,4 +1,4 @@
-package com.snhu.capstone.model;
+package capstone.model;
 
 
 import java.lang.String;

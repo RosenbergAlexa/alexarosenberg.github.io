@@ -1,4 +1,4 @@
-package com.snhu.capstone.model;
+package capstone.model;
 
 public class Monkey extends RescueAnimal {
 	//Class fields

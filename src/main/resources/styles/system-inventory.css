@@ -1,0 +1,63 @@
+/* Label header */
+.label-welcome {
+   -fx-font-size: 32px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: bolder;
+   -fx-alignment: center;
+   -fx-text-fill: #61032c;
+}
+
+/* Label for error messages */
+.label-error {
+   -fx-font-size: 14px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: normal;
+   -fx-alignment: center;
+   -fx-text-fill: #61032c;
+}
+
+/* Inventory Button characteristics */
+.inventory-button {
+   -fx-background-color: #faf2f5;
+   -fx-text-fill: black;
+   -fx-font-size: 12px;
+   -fx-padding: 6px;
+   -fx-font-family: "Helvetica";
+   -fx-pref-width: 100px;
+   -fx-pref-height: 25px;
+   -fx-effect: dropshadow( three-pass-box, rgba( 0, 0, 0, 0.6 ), 5, 0.0, 0, 1 );
+}
+
+/* Hover state for buttons */
+.inventory-button:hover {
+   -fx-background-color: #c9a5b2;
+}
+
+/* Logout Button characteristics */
+.logout-button {
+   -fx-background-color: #faf2f5;
+   -fx-text-fill: black;
+   -fx-text-size: 14px;
+   -fx-font-family: "Helvetica";
+   -fx-padding: 10px 20px;
+   -fx-effect: dropshadow( three-pass-box, rgba( 0, 0, 0, 0.6 ), 5, 0.0, 0, 1 );
+}
+
+/* Hover state for buttons */
+.logout-button:hover {
+   -fx-background-color: #c9a5b2;
+}
+
+/* Text fields for search */
+.search-entry {
+   -fx-text-fill: black;
+   -fx-font-family: "Helvetica";
+   -fx-font-size: 14px;
+   -fx-background-color: transparent;
+   -fx-border-color: grey;
+   -fx-border-width: 0 0 1 0;
+}
+/* Change search field's color when focused */
+.search-entry:focused {
+   -fx-border-color: #0078d7;
+}

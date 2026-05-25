@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="79.0" prefWidth="475.0" stylesheets="@../styles/listView-card.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label fx:id="name" layoutX="14.0" layoutY="8.0" prefHeight="37.0" prefWidth="252.0" styleClass="animal-name" text="Animal Name Here" />
+      <Label fx:id="species" layoutX="14.0" layoutY="38.0" prefHeight="29.0" prefWidth="74.0" styleClass="animal-species" text="Species" />
+      <Label fx:id="subType" layoutX="88.0" layoutY="38.0" prefHeight="29.0" prefWidth="155.0" styleClass="animal-species" text="SubType" />
+      <Label fx:id="status" layoutX="243.0" layoutY="15.0" prefHeight="50.0" prefWidth="120.0" styleClass="animal-status" text="Reserved" />
+      <Button fx:id="editButton" layoutX="371.0" layoutY="27.0" mnemonicParsing="false" onAction="#editAnimal" prefHeight="25.0" prefWidth="74.0" styleClass="edit-button" text="Edit" />
+   </children>
+</AnchorPane>

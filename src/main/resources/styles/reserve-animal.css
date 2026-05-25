@@ -1,0 +1,94 @@
+/* Label header */
+.label-welcome {
+   -fx-font-size: 32px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: bolder;
+   -fx-alignment: center;
+   -fx-text-fill: #61032c;
+}
+
+/* Label for error messages */
+.label-error {
+   -fx-font-size: 14px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: normal;
+   -fx-alignment: center;
+   -fx-text-fill: #61032c;
+}
+
+/* Styling for required field labels */
+.field-labels {
+   -fx-font-size: 16px;
+   -fx-font-family: "Helvetica";
+   -fx-text-fill: #61032c;
+   -fx-alignment: center-right;
+}
+
+/* Inventory Button characteristics */
+.inventory-button {
+   -fx-background-color: #faf2f5;
+   -fx-text-fill: black;
+   -fx-font-size: 12px;
+   -fx-padding: 6px;
+   -fx-font-family: "Helvetica";
+   -fx-pref-width: 100px;
+   -fx-pref-height: 25px;
+   -fx-effect: dropshadow( three-pass-box, rgba( 0, 0, 0, 0.6 ), 5, 0.0, 0, 1 );
+}
+
+/* Hover state for buttons */
+.inventory-button:hover {
+   -fx-background-color: #c9a5b2;
+}
+
+/* Text fields for country */
+.search-entry {
+   -fx-text-fill: #bb4c70;
+   -fx-font-family: "Helvetica";
+   -fx-font-size: 14px;
+   //-fx-background-color: transparent;
+   -fx-border-color: grey;
+   -fx-border-width: 1 1 1 1;
+}
+/* Change search field's color when focused */
+.search-entry:focused {
+   -fx-border-color: #0078d7;
+}
+
+/* Animal type combo box */
+.custom-combo{
+   -fx-background-color: #f0f0f0;
+   -fx-border-color: grey;
+   -fx-border-radius: 5px;
+}
+
+/* Style the arrow indicating it's a dropdown menu */
+.custom-combo > .arrow-button{
+   -fx-background-color: transparent;
+}
+
+/* Change dropdown arrow color */
+.custom-combo > .arrow-button > .arrow {
+   -fx-text-fill: #bb4c70;
+}
+
+/* Sytle the popup list that shows up when clicked */
+.custom-combo .list-cell {
+   //-fx-background-color: #f7f5f6;
+   -fx-text-fill: #bb4c70;
+   -fx-font-family: "Helvetica";
+   -fx-font-size: 14px;
+   -fx-padding: 5px 10px;
+}
+
+/* Style the cell when the mouse hovers over it */
+.custom-combo .list-cell:hover {
+   -fx-background-color: #0096C9;
+   -fx-text-fill: #61032c;
+}
+
+/* Styling the selected cell in the dropdown */
+.custom-combo .list-cell:selected {
+   //-fx-background-color: #bb4c70;
+   -fx-text-fill: #61032c;
+}

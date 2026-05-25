@@ -3,7 +3,16 @@
    -fx-font-size: 30px;
    -fx-font-family: "Helvetica";
    -fx-font-weight: bolder;
-   -fx-text-alignment: center;
+   -fx-alignment: center;
+   -fx-text-fill: #61032c;
+}
+
+/* Label for error messages */
+.label-error {
+   -fx-font-size: 14px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: normal;
+   -fx-alignment: center;
    -fx-text-fill: #61032c;
 }
 
@@ -11,9 +20,9 @@
 .login-button {
    -fx-background-color: #ede8e9;
    -fx-text-fill: black;
-   -fx-text-size: 20px;
+   -fx-font-size: 14px;
    -fx-font-family: "Helvetica";
-   -fx-padding: 10px, 20px;
+   -fx-padding: 10px 20px;
    -fx-effect: dropshadow( three-pass-box, rgba( 0, 0, 0, 0.6 ), 5, 0.0, 0, 1 );
 }
 
@@ -24,7 +33,7 @@
 
 /* Text fields for username and password */
 .text-entry {
-   -fx-color: black;
+   -fx-text-fill: black;
    -fx-padding: 5px;
    -fx-font-family: "Helvetica";
    -fx-font-size: 14px;

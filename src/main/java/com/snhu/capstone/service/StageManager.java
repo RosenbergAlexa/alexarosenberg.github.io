@@ -6,7 +6,6 @@
  *    
  * Version History:
  * - 1.0.0     22 May 2026     ARosenberg     Class defined
- * 
  */
 
 package com.snhu.capstone.service;
@@ -38,7 +37,15 @@ public class StageManager{
 		return instance;
 	}
 	
-	
+	/**
+	 * Prompts the stage manager to open the requested window. The current window will be stored so that it can be
+	 *   returned to if/when requested. A lambda method can be passed in to prompt the execution of a controller method,
+	 *   which can allow data to be passed into the window being opened
+	 * @param <T>
+	 * @param currentStage
+	 * @param fxmlPath
+	 * @param controllerConfig
+	 */
 	public <T> void openWindow( Stage currentStage, String fxmlPath, Consumer< T > controllerConfig ) {
 		
 		try {
@@ -103,7 +110,12 @@ public class StageManager{
 		
 	}
 	
-	
+	/**
+	 * Closes all currently open but hidden windows and displays the requested window. Intention is to return users to the
+	 *    user login screen
+	 * @param currentStage
+	 * @param loginFxmlPath
+	 */
 	public void resetToLogin( Stage currentStage, String loginFxmlPath ) {
 		
 		//Close the currently active windown

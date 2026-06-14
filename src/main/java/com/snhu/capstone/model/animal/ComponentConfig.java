@@ -32,11 +32,55 @@ public class ComponentConfig {
 	private String inServiceCountry;
 	private String breed;
 	private String species;
-	private float height;
-	private float tailLength;
-	private float bodyLength;
+	private float height = -1.0f;
+	private float tailLength = -1.0f;
+	private float bodyLength = -1.0f;
 	
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd" );
+	
+	/**
+	 * Provide a constructor to set values for all fields, with the assumption the caller does not know or want to pre-check 
+	 *   the type of animal they are creating
+	 * @throws InvalidAnimalDataException 
+	 */
+	public ComponentConfig( String name, String type, String gender, int age, float weight, LocalDate gotchaDate, 
+			String originCountry, String trainingStatus, boolean reserved, String serviceCountry, String subType, 
+			float height, float tailLength, float bodyLength ) throws InvalidAnimalDataException {
+		
+		this.name = name;
+		try { //Set the config animal type. If unable to determine type, throw an exception so the user can be warned
+
+			this.animalType = AnimalType.valueOf( type.toUpperCase() );
+			
+		}catch( IllegalArgumentException | NullPointerException e ) {
+			
+			throw new InvalidAnimalDataException( "Invalid or unknown animal type" );
+			
+		}
+		try{ //Set the config gender. If unable to determine gender, throw an exception so the user can be warned
+			
+			this.gender = Gender.valueOf( gender.toUpperCase() );
+			
+		}catch( IllegalArgumentException | NullPointerException e ) {
+			
+			throw new InvalidAnimalDataException( "Invalid or unknown animal gender" );
+			
+		}
+		this.age = age;
+		this.weight = weight;
+		this.acquisitionDate = gotchaDate;
+		this.acquisitionCountry = originCountry;
+		this.trainingStatus = trainingStatus;
+		this.reserved = reserved;
+		this.inServiceCountry = serviceCountry;
+		this.breed = subType;
+		this.species = subType;
+		this.height = height;
+		this.tailLength = tailLength;
+		this.bodyLength = bodyLength;
+		
+	}
+	
 	
 	/**
 	 * Provide a constructor to set values for all the fields utilized by the Dog class

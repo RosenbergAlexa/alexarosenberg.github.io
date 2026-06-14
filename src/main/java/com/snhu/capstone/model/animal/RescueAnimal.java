@@ -49,6 +49,7 @@ public abstract class RescueAnimal {
     //Animal Type
 	public ObjectProperty< AnimalType > animalTypeProperty(){ return this.animalType; }
 	public AnimalType getAnimalType() { return animalType.get(); }
+	public String getAnimalTypeStr() { return animalType.get().toString(); }
 	public void setAnimalType( AnimalType type ) { this.animalType.set( type ); }
 
 	//Gender

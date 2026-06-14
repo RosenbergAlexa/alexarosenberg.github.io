@@ -11,16 +11,38 @@
 package com.snhu.capstone.model.animal;
 
 import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import com.snhu.capstone.model.exceptions.InvalidAnimalDataException;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Task;
+import java.util.Comparator;
+import java.util.List;
+
+import com.snhu.capstone.service.DatabaseService;
 
 public class RescueAnimalModel{
 	
+	//String property to capture, hold, and expose database/system errors
+	private final StringProperty errorMessage = new SimpleStringProperty( "" );
+	
 	//Initialize the observable list with an extractor targeting fields which are expected to be updated AND a visual part of the UI
 	private final ObservableList< RescueAnimal > animals = FXCollections.observableArrayList( animal -> 
-			new Observable[] { animal.trainingStatusProperty(), animal.reservedProperty() } );
+			new Observable[] { 
+					animal.trainingStatusProperty(),
+					animal.reservedProperty(),
+					animal.nameProperty(),
+					animal.animalTypeProperty() 
+					} 
+			);
+	
+	//Wrap the observable list in a filtered list
+	private final FilteredList< RescueAnimal > filteredAnimals = new FilteredList<>( this.animals );
+	
+	//Wrap the observable list into a SortedList. This makes it possible to automatically add new animals in a sorted fashion
+	private final SortedList< RescueAnimal > sortedAnimals = new SortedList<>( this.filteredAnimals );
 	
 	/**
 	 * A private, internal class meant to handle thread-safe initialization of the RescueAnimalModel data.
@@ -44,73 +66,98 @@ public class RescueAnimalModel{
 	}
 	
 	/**
+	 * Getters and Setters for the error message property
+	 * @return
+	 */
+	public StringProperty errorMessageProperty() { return this.errorMessage; }
+	public String getErrorMessage() { return this.errorMessage.get(); }
+	public void clearErrorMessage() { this.errorMessage.set( "" ); }
+	
+	/**
+	 * Returns the collection of filtered animals
+	 */
+	public FilteredList< RescueAnimal > getFilteredAnimals(){ return this.filteredAnimals; }
+	
+	/**
+	 * Returns the list of sorted animals
+	 */
+	public SortedList< RescueAnimal > getSortedAnimals(){ return this.sortedAnimals; }
+	
+	/**
+	 * Adds a rescue animal to the held collection of rescue animal objects. Using this ensures that the filtered list and sorted lists are
+	 *   also updated properly
+	 */
+	public void addAnimal( RescueAnimal animal ) {
+		if( animal != null ) {
+			
+			this.animals.add( animal );
+			
+		}
+	}
+	
+	/**
 	 * Initialize the collection of rescue animal data
 	 */
-	private RescueAnimalModel() {
+	private RescueAnimalModel() {	
+		
+		Comparator< RescueAnimal > optimizedSort = ( animal1, animal2 ) -> {
+			
+			//Compare the names of the 2 animals first
+			int compareResult = animal1.getName().compareToIgnoreCase( animal2.getName() );
+			if( compareResult != 0 ) {
+				return compareResult;
+			}
+			
+			//If the names are the same, compare their animal types
+			return animal1.getAnimalTypeStr().compareToIgnoreCase( animal2.getAnimalTypeStr() );
+		};
+		
+		sortedAnimals.setComparator( optimizedSort );
 		
 		//Initialize collection of data from the remote database asynchronously
 		loadAnimalsFromDatabase();
 		
-	}
-	
-	/**
-	 * Return the collection of rescue animals to the caller
-	 * @return
-	 */
-	public ObservableList< RescueAnimal > getAnimals(){	
-		return this.animals;	
-	}
-	
+	}	
 	
 	/**
 	 * Collate the collection of known rescue animals from the database. Executes asynchronously to prevent UI lag
 	 */
 	private void loadAnimalsFromDatabase() {
 		
-		//TODO: integrate database into system. Also need to create a DatabaseService
-		/*
-		Task< List< RescueAnimal > > loadTask = new Task() {
+		Task< List< RescueAnimal > > loadTask = new Task<>() {
 			
 			@Override
 			protected List< RescueAnimal > call() throws Exception{
-				
-				//return DatabaseService.fetchAnimals();
-				
+				return DatabaseService.fetchAnimals();
 			}
 			
 		};
 		
 		//Set all the retrieved animals if the thread activity completes successfully
-		loadTask.setOnSucceed( event -> animals.setAll( loadTask.getValue() ) );
+		loadTask.setOnSucceeded( _ -> {
+			List< RescueAnimal > results = loadTask.getValue();
+			if( results != null && !results.isEmpty() ){
+				animals.setAll( results );
+			}
+		});
 		
 		//Set failure behavior if the thread activity fails
-		loadTask.setOnFailed( event ->{
-			//TODO: LOGGER??????
-			//loadTask.getException().printStackTrace();
+		loadTask.setOnFailed( _ ->{
+			Throwable exception = loadTask.getException();
+			
+			String msg = ( exception != null && exception.getMessage() != null ) 
+					? exception.getMessage()
+					: "A timeout or network drop occurred with the database";
+			
+			//Set the current error message so that callers can check and update on their end
+			this.errorMessage.set( msg );
+			
 		});
-		*/
 		
-		//TODO: delete hard-coded animal collection once database integration is complete
-		try{
-			
-			animals.add( AnimalFactory.createAnimal( new ComponentConfig(
-					"Spot", "Dog", "male", 1, 25.6F, "2019-05-12", "United States", "intake", false, "United States", "German Shepherd" ) ) );
-			animals.add( AnimalFactory.createAnimal( new ComponentConfig(
-					"Rex", "Dog", "male", 3, 35.2F, "2020-02-03", "United States", "in service", false, "United States", "Great Dane" ) ) );
-			animals.add( AnimalFactory.createAnimal( new ComponentConfig(
-					"Bella", "Dog", "female", 4, 9.5F, "2019-12-12", "Canada", "in service", true, "Canada", "Chihuahua" ) ) );
-			animals.add( AnimalFactory.createAnimal( new ComponentConfig(
-					"Astrid", "Monkey", "female", 3, 9.5F, "2021-07-01", "Rwanda", "Phase I", false, "Rwanda", "Guenon", 17.0F, 6.0F, 10.0F ) ) );
-			animals.add( AnimalFactory.createAnimal( new ComponentConfig(
-					"Chomper", "Monkey", "male", 1, 0.5F, "2022-01-15", "Brazil", "intake", false, "Brazil", "Marmoset", 5.25F, 3.5F, 3.0F ) ) );
-			animals.add( AnimalFactory.createAnimal( new ComponentConfig(
-					"Machine Gun", "Monkey", "female", 5, 17.0F, "2019-05-29", "Japan", "Phase III", false, "Japan", "Macaque", 20.6F, 0.5F, 20.6F ) ) );
-			animals.add( AnimalFactory.createAnimal( new ComponentConfig(
-					"Rocket Launcher", "Monkey", "female", 6, 16.34F, "2019-05-29", "Japan", "in service", false, "Japan", "Macaque", 20.6F, 0.5F, 20.6F ) ) );
-			
-		} catch( InvalidAnimalDataException e ){
-			e.printStackTrace();
-		}
+		//Launch background thread from the thread pool to keep the UI functional
+		Thread backgroundThread = new Thread( loadTask );
+		backgroundThread.setDaemon( true );
+		backgroundThread.start();
 		
 	}
 

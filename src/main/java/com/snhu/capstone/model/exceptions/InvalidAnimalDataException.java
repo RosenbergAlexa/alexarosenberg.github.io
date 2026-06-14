@@ -1,3 +1,11 @@
+/*
+ * Class: InvalidAnimalDataException.java
+ * Project: CS-499 Capstone
+ * Purpose: Acts as a custom exception which a class/method may define and throw. Intended use case is to represent instances in which the 
+ *    creation of a rescue animal cannot be completed because of invalid data
+ *    
+ * Version History:
+ */
 package com.snhu.capstone.model.exceptions;
 
 public class InvalidAnimalDataException extends Exception{

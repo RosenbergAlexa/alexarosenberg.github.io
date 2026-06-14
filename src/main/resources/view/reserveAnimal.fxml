@@ -14,7 +14,7 @@
       <Label layoutX="167.0" layoutY="59.0" prefHeight="48.0" prefWidth="266.0" styleClass="label-welcome" text="Reserve Animal" />
       <ButtonBar layoutX="178.0" layoutY="320.0" prefHeight="48.0" prefWidth="244.0" AnchorPane.leftAnchor="178.0" AnchorPane.rightAnchor="178.0">
         <buttons>
-          <Button fx:id="cancelReserve" mnemonicParsing="false" onAction="#cancelAction" styleClass="inventory-button" text="Cancel" translateX="-30.0" />
+          <Button fx:id="cancelReserve" mnemonicParsing="false" onAction="#cancelAction" styleClass="inventory-button" text="Continue" translateX="-30.0" />
             <Button fx:id="reserveButton" mnemonicParsing="false" onAction="#reserveAnimal" styleClass="inventory-button" text="Reserve" translateX="-5.0" />
         </buttons>
       </ButtonBar>

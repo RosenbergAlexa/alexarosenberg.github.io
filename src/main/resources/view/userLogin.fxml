@@ -54,7 +54,7 @@
             <PasswordField fx:id="password" layoutX="220.0" layoutY="313.0" prefHeight="31.0" prefWidth="200.0" promptText="Password" styleClass="text-entry" AnchorPane.leftAnchor="220.0" AnchorPane.rightAnchor="220.0" />
             <Label alignment="CENTER" layoutX="147.0" layoutY="174.0" prefHeight="36.0" prefWidth="347.0" styleClass="label-title" text="Rescue Animal Tracker" />
             <Button fx:id="loginButton" layoutX="274.0" layoutY="369.0" mnemonicParsing="false" onAction="#userLogin" prefHeight="31.0" prefWidth="92.0" styleClass="login-button" text="Log In" />
-            <Label fx:id="errorMessage" layoutX="157.0" layoutY="223.0" prefHeight="31.0" prefWidth="330.0" styleClass="label-error" text="Username or Password is Incorrect" visible="false" />
+            <Label fx:id="errorMessage" layoutX="64.0" layoutY="223.0" prefHeight="31.0" prefWidth="520.0" styleClass="label-error" text="Something went wrong trying - please try again or contact support" visible="false" />
       </children>
     </AnchorPane>
   </children>

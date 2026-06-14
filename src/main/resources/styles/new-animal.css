@@ -1,0 +1,148 @@
+/* Label header */
+.label-welcome {
+   -fx-font-size: 32px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: bolder;
+   -fx-alignment: center;
+   -fx-text-fill: #61032c;
+}
+
+/* Label for error messages */
+.label-error {
+   -fx-wrap-text: true;
+   -fx-font-size: 16px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: bold;
+   -fx-alignment: center;
+   -fx-text-alignment: center;
+   -fx-max-width: infinity;
+   -fx-text-fill: #61032c;
+}
+
+/* Label for text fields */
+.label-instructions {
+   -fx-font-size: 16px;
+   -fx-font-family: "Helvetica";
+   -fx-font-weight: normal;
+   -fx-alignment: center-right;
+   -fx-text-fill: #61032c;
+}
+
+/* Button characteristics */
+.new-animal-button {
+   -fx-background-color: #faf2f5;
+   -fx-text-fill: black;
+   -fx-font-size: 12px;
+   -fx-padding: 6px;
+   -fx-font-family: "Helvetica";
+   -fx-pref-width: 125px;
+   -fx-pref-height: 30px;
+   -fx-effect: dropshadow( three-pass-box, rgba( 0, 0, 0, 0.6 ), 5, 0.0, 0, 1 );
+}
+
+/* Hover state for buttons */
+.new-animal-button:hover {
+   -fx-background-color: #c9a5b2;
+}
+
+/* Text fields for new animal details */
+.animal-details {
+   -fx-text-fill: #61032c;
+   -fx-font-family: "Helvetica";
+   -fx-font-size: 14px;
+}
+
+/* Change search field's color when focused */
+.search-entry:focused {
+   -fx-border-color: #0078d7;
+}
+
+/* Animal type combo box */
+.custom-combo{
+   -fx-background-color: #f0f0f0;
+   -fx-border-color: grey;
+   -fx-border-radius: 5px;
+}
+
+/* Style the arrow indicating it's a dropdown menu */
+.custom-combo > .arrow-button{
+   -fx-background-color: transparent;
+}
+
+/* Change dropdown arrow color */
+.custom-combo > .arrow-button > .arrow {
+   -fx-text-fill: #bb4c70;
+}
+
+/* Sytle the popup list that shows up when clicked */
+.custom-combo .list-cell {
+   //-fx-background-color: #f7f5f6;
+   -fx-text-fill: #bb4c70;
+   -fx-font-family: "Helvetica";
+   -fx-font-size: 14px;
+   -fx-padding: 5px 10px;
+}
+
+/* Style the cell when the mouse hovers over it */
+.custom-combo .list-cell:hover {
+   -fx-background-color: #0096C9;
+   -fx-text-fill: #61032c;
+}
+
+/* Styling the selected cell in the dropdown */
+.custom-combo .list-cell:selected {
+   -fx-text-fill: #61032c;
+}
+
+/* Overall styling for the date picker */
+.date-picker {
+   -fx-border-radius: 5px;
+   -fx-background-radius: 3px;
+   -fx-effect: null;
+}
+
+/* Change the overall theme color of the popup header */
+.date-picker-popup > .month-year-pane {
+   -fx-padding: 5px;
+}
+
+/* Customizing the calendar's "Today" cell highlight */
+.date-picker-popup > .calendar-grid > .today {
+    -fx-background-color: #bb4c70;
+    -fx-text-fill: white;
+}
+
+/* Styling the button that opens the calendar */
+.date-picker > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-background-size: contain;
+    -fx-background-repeat: no-repeat;
+}
+
+/* Style the text field portion */
+.date-picker > .text-field {
+    -fx-font-size: 14px;
+    -fx-border-color: #61032c;
+}
+
+/* Default state (OFF) */
+.on-off-toggle {
+   -fx-background-color: #cccccc; /* Grey background */
+   -fx-font-family: "Helvetica";
+   -fx-font-size: 14px;
+   -fx-text-fill: black;
+   -fx-padding: 5 15 5 15;
+   -fx-background-radius: 12; /* Rounded corners */
+}
+
+/* Selected state (ON) */
+.on-off-toggle:selected {
+    -fx-background-color: #4CAF50; /* Green background */
+    -fx-text-fill: white;
+}
+
+/* Hover effect */
+.on-off-toggle:hover {
+    -fx-cursor: hand;
+    -fx-opacity: 0.9;
+}

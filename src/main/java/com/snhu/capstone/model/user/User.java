@@ -25,7 +25,10 @@ public class User{
 		this.firstName = fName;
 		this.lastName = lName;
 		this.email = email;
-		this.role = Role.valueOf( role.toUpperCase() );
+		try{ this.role = Role.fromString( role ); }
+		catch( IllegalArgumentException e ){
+			throw e;
+		}
 		
 	}
 	

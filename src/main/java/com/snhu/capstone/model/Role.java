@@ -12,8 +12,35 @@ package com.snhu.capstone.model;
 
 public enum Role{
 	
-	ADMIN,
-	USER,
-	GUEST
+	ADMIN( "Administrator" ),
+	USER( "User" ),
+	GUEST( "Guest" );
+	
+	private String displayName;
+	
+	Role( String displayName ) {	
+		this.displayName = displayName;	
+	}
+
+	public String getDisplayName() {
+		return this.displayName;
+	}
+	
+	@Override
+	public String toString() {
+		return this.displayName;
+	}
+	
+	public static Role fromString( String text ) {
+		
+		for( Role role : Role.values() ) {
+			if( role.displayName.equalsIgnoreCase( text ) ||
+				role.name().equalsIgnoreCase( text ) ) {
+				return role;
+			}
+		}
+	
+		throw new IllegalArgumentException( "No role found for: " + text );
+	}
 	
 }

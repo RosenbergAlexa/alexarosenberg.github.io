@@ -12,7 +12,22 @@ package com.snhu.capstone.model;
 
 public enum Gender{
 
-	MALE,
-	FEMALE
+	MALE( "Male" ),
+	FEMALE( "Female" );
+	
+	private String displayName;
+	
+	Gender( String displayName ){
+		this.displayName = displayName;
+	}
+	
+	public String getDisplayName() { 
+		return this.displayName; 
+	}
+	
+	@Override
+	public String toString() {
+		return this.displayName;
+	}
 	
 }

@@ -1,23 +1,44 @@
+/*
+ * Class: ReservationController.java
+ * Project: CS-499 Capstone
+ * Purpose: Controls the creation, actions, and reactions of the reserve animal window.
+ * 
+ * Version History:
+ * - 1.0.0     24 May 2026     ARosenberg     Class defined
+ * - 1.1.0     04 Jun 2026     ARosenberg     Class updated to connect reservation to the back-end database
+ * 
+ */
+
 package com.snhu.capstone.controllers;
 
+import java.sql.SQLException;
+import java.util.Objects;
+
 import com.snhu.capstone.model.AnimalType;
+import com.snhu.capstone.model.Filterable;
 import com.snhu.capstone.model.animal.RescueAnimal;
 import com.snhu.capstone.model.animal.RescueAnimalModel;
+import com.snhu.capstone.model.exceptions.UnknownAnimalException;
+import com.snhu.capstone.service.DatabaseService;
 import com.snhu.capstone.service.StageManager;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class ReservationController{
+public class ReservationController implements Filterable{
 	
 	@FXML private Button reserveButton;
 	@FXML private Button cancelReserve;
@@ -32,9 +53,8 @@ public class ReservationController{
 	 */
 	@FXML public void initialize() {
 		
-		ObservableList< String > animalTypes = FXCollections.observableArrayList();
-		
 		//Add all the allowed animal types to the list of drop-down options
+		ObservableList< String > animalTypes = FXCollections.observableArrayList();
 		for( AnimalType type : AnimalType.values() ) {
 			animalTypes.add( type.toString() );
 		}
@@ -44,7 +64,7 @@ public class ReservationController{
 		message.setText( "" );
 		
 		//Wrap the observable list in a filtered list
-		knownAnimals = new FilteredList<>( RescueAnimalModel.getInstance().getAnimals() );
+		knownAnimals = RescueAnimalModel.getInstance().getFilteredAnimals();
 		
 		//Set the listeners for the filtered list to react when either dropdown or country value is changed
 		typeDropdown.valueProperty().addListener( ( _, _, _ ) -> updateFilter() );
@@ -57,7 +77,10 @@ public class ReservationController{
 	 * @param event
 	 */
 	@FXML
-	public void cancelAction( ActionEvent event ) {
+	private void cancelAction( ActionEvent event ) {
+		
+		//Reset the filter on the shared RescueAnimal data to ensure there is not filter continuity
+		knownAnimals.setPredicate( _ -> true );
 		
 		Stage currentStage = ( Stage ) ( ( Node ) event.getSource()).getScene().getWindow();
 		StageManager.getInstance().returnToPreviousWindow( currentStage );
@@ -69,7 +92,7 @@ public class ReservationController{
 	 * @param event
 	 */
 	@FXML 
-	public void reserveAnimal( ActionEvent event ) {
+	private void reserveAnimal( ActionEvent event ) {
 		
 		//Validate selected item in combo box -aka user HAS to select an option
 		String selectedType = typeDropdown.getValue();
@@ -97,26 +120,15 @@ public class ReservationController{
 			
 		}
 		
-		//Get the first animal matching the user's requested criteria
+		//Get the first animal matching the user's requested criteria, make sure an object was captured correctly
 		RescueAnimal selectedAnimal = knownAnimals.getFirst();
-		selectedAnimal.setReserved( true );
+		if( Objects.isNull( selectedAnimal ) ) {
+			message.setText( "Something went wrong - Unable to find an animal matching your specified criteria" );
+			return;
+		}
 		
-		//Use thread to send update command for animal using DatabaseService to update db data
-		/*
-		Thread saveAnimalThread = Thread.ofPlatform().daemon.unstarted(() -> {
-		   try{
-		      //Invoke call to DatabaseService
-		      DatabaseService.updateAnimal( selectedAnimal );
-		   }catch( Exception e ){
-		      //TODO: LOGGER?????
-		   }
-		});
-		saveAnimalThread.start();
-		 */
-		
-		//Update message
-		message.setText( selectedAnimal.getName() + " reserved for " + selectedAnimal.getInServiceCountry() );
-		
+		reserveFirstAvailableAnimal( selectedAnimal );
+
 	}
 	
 	/**
@@ -131,8 +143,15 @@ public class ReservationController{
 		
 		knownAnimals.setPredicate( animal -> {
 			
+			//Only display animals that are not already reserved
+			if( animal.getReserved() ) {
+				return false;
+			}
+			
+			
 			//Condition 1 - match the animal type or skip if value not selected
-			boolean matchType = false;
+			boolean matchType = true;
+			
 			if( selectedType != null ) {
 				
 				matchType = AnimalType.valueOf( selectedType.toUpperCase() ) == animal.getAnimalType();
@@ -140,7 +159,7 @@ public class ReservationController{
 			}
 			
 			//Condition 2 - match the requested country or skip of not entered
-			boolean matchCountry = false;
+			boolean matchCountry = true;
 			if( selectedCountry != null ) {
 				
 				matchCountry = selectedCountry.equalsIgnoreCase( animal.getInServiceCountry() );
@@ -153,6 +172,82 @@ public class ReservationController{
 			return !reservedStatus && ( matchType && matchCountry );
 			
 		});
+		
+	}
+	
+	@Override
+	public void clearFilters() {
+		
+		if( typeDropdown != null ) {
+			typeDropdown.setValue( null );
+		}
+		
+		if( targetCountry != null ) {
+			targetCountry.clear();
+		}
+		
+		if( message != null ) {
+			message.setText( "" );
+		}
+		
+	}
+	
+	/**
+	 * Controls the reservation process, marshals the update to the database on a background thread, and handles failure and 
+	 *   success behavior responses, including updating the UI to reflect the final result
+	 * @param firstAvailable
+	 */
+	private void reserveFirstAvailableAnimal( RescueAnimal firstAvailable ) {
+		
+		Scene scene = message.getScene();
+		
+		//Use thread to send update command for animal using DatabaseService to update db data
+		Task< Void > reserveTask = new Task< Void >() {
+			
+			@Override
+			protected Void call() throws Exception{
+				return DatabaseService.reserveAnimal( firstAvailable );
+			}
+
+		};
+
+		//Set the mouse cursor to turn into a spinning wheel while the task is running so users know the program is 'thinking'
+		scene.cursorProperty().bind(
+				Bindings.when( reserveTask.runningProperty() )
+				.then( Cursor.WAIT )
+				.otherwise( Cursor.DEFAULT ) );
+		
+		//Set what should happen when the thread completes successfully
+		reserveTask.setOnSucceeded( _ -> {
+			
+			firstAvailable.setReserved( true );
+			message.setText( firstAvailable.getName() + " reserved for " + firstAvailable.getInServiceCountry() );
+			 
+			//Reset the filter on the shared RescueAnimal data
+			knownAnimals.setPredicate( _ -> true );
+			
+		});
+		
+		//Set failure behavior if the thread activity fails - make sure exception messages are sanitized to prevent security leaks
+		reserveTask.setOnFailed( _ -> {
+			
+			Throwable exception = reserveTask.getException();
+			knownAnimals.setPredicate( _ -> true ); //Reset the filter on the shared RescueAnimal data so the user may start afresh if desired
+			
+			if( exception != null && exception instanceof SQLException ) {
+				message.setText( "Something went wrong - Please try again or contact support" );
+			}else if( exception != null && exception instanceof UnknownAnimalException ) {
+				message.setText( exception.getMessage() );
+			}else {
+				message.setText( "Something went wrong - please try again or contact support" );
+			}
+			
+		});
+		
+		//Launch a background thread from the thread pool to keep the UI functional
+		Thread backgroundThread = new Thread( reserveTask );
+		backgroundThread.setDaemon( true );
+		backgroundThread.start();
 		
 	}
 

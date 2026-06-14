@@ -7,6 +7,7 @@
  * Version History:
  * - 1.0.0     21 May 2026     ARosenberg     Class defined
  * - 1.0.1     23 May 2026     ARosenberg     Updated to utilize RescueAnimalModel for retrieving animal data
+ * - 1.1.0     02 Jun 2026     ARosenberg     Class updated to connect initial display of animal collection to the back-end database
  */
 
 package com.snhu.capstone.controllers;
@@ -16,8 +17,7 @@ import com.snhu.capstone.model.animal.RescueAnimalModel;
 import com.snhu.capstone.model.user.User;
 import com.snhu.capstone.service.StageManager;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -27,7 +27,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class InventoryController{
+public class InventoryController {
 	
 	@FXML private Button logoutButton;
 	@FXML private Button reserveAnimalButton;
@@ -37,16 +37,14 @@ public class InventoryController{
 	@FXML private ListView< RescueAnimal > inventoryView;
 	
 	private User currentUser;
-	private ObservableList< RescueAnimal > observableList;
 	
 	/**
 	 * Identify the collection of known animals in the inventory and create cards for them in the ListView
 	 */
 	private void setListView() {
 		
-		//Add array list items to the observable list, then set the observable list as the listView's item collection
-		observableList = FXCollections.observableArrayList( RescueAnimalModel.getInstance().getAnimals() );
-		inventoryView.setItems( observableList );
+		//Use the sorted list of Rescue Animals to build the ListView
+		inventoryView.setItems( RescueAnimalModel.getInstance().getSortedAnimals() );
 		
 		//Set the ListView cell factory controller. Necessary to ensure each animal card is created correctly
 		inventoryView.setCellFactory( _ -> new AnimalCardCell( this.currentUser.isAdmin() ) );
@@ -54,7 +52,14 @@ public class InventoryController{
 	}
 	
 	@FXML
-	void initialize() {}
+	void initialize() {
+		
+		//Set a listener for the search text field to respond to users entering text
+		searchKeyword.textProperty().addListener( ( _, _, newValue ) -> {
+			applySearchFilter( newValue );
+		});
+		
+	}
 	
 	/**
 	 * Setter method to be called from the authentication controller to set the currently authenticated user
@@ -70,12 +75,36 @@ public class InventoryController{
 			
 			//Set the dialog title
 			welcomeTitle.setText( "Welcome, " + currentUser.getFirstName() );
-			newAnimalButton.setVisible(  currentUser.isAdmin() );
+			newAnimalButton.setVisible( currentUser.isAdmin() );
 			
 		}else { System.out.println( "Provided null user data, please contact support" ); }
+				
+	}
+	
+	
+	private void applySearchFilter( String text ) {
 		
+		FilteredList< RescueAnimal > filteredAnimals = RescueAnimalModel.getInstance().getFilteredAnimals();
 		
+		//Set a predicate filter on the list
+		filteredAnimals.setPredicate( animal -> {
 			
+			//Conditional check for an empty search bar - keep the entire list
+			if( text == null || text.trim().isEmpty() ) {
+				return true;
+			}
+			
+			String query = text.trim().toLowerCase();
+			
+			//Apply the property checks for animal name and/or animal type
+			boolean nameMatch = animal.getName() != null && animal.getName().toLowerCase().contains( query );
+			boolean typeMatch = animal.getAnimalTypeStr() != null && animal.getAnimalTypeStr().toLowerCase().contains( query );
+			
+			//Return whether a name or animal type match was found. Returning false removes the animal from the filtered list
+			return nameMatch || typeMatch;
+			
+		});
+		
 	}
 	
 	/**
@@ -83,7 +112,9 @@ public class InventoryController{
 	 * @param event
 	 */
 	@FXML
-	protected void userLogout( ActionEvent event ) {
+	private void userLogout( ActionEvent event ) {
+		
+		searchKeyword.clear();
 		
 		Stage currentStage = ( Stage ) ( ( Node ) event.getSource()).getScene().getWindow();
 		
@@ -93,9 +124,13 @@ public class InventoryController{
 	}
 	
 	@FXML
-	protected void addNewAnimal( ActionEvent event ) {
+	private void addNewAnimal( ActionEvent event ) {
 		
-		//TODO: connect logic to show add animal screen. Should only be visible if the user has admin rights
+		searchKeyword.clear();
+		Stage currentStage = ( Stage ) ( ( Node ) event.getSource()).getScene().getWindow();
+		
+		//Use the StageManager service to hide the main inventory window and show the Add Animal window
+		StageManager.getInstance().openWindow( currentStage, "/view/addAnimal.fxml", null );
 		
 	}
 	
@@ -104,14 +139,14 @@ public class InventoryController{
 	 * @param event
 	 */
 	@FXML
-	protected void reserveAnimal( ActionEvent event ) {
+	private void reserveAnimal( ActionEvent event ) {
 		
+		searchKeyword.clear();
 		Stage currentStage = ( Stage ) ( ( Node ) event.getSource()).getScene().getWindow();
 		
 		//Use the StageManager service to route to the reserve animal window
 		StageManager.getInstance().openWindow( currentStage, "/view/reserveAnimal.fxml", null );
 		
 	}
-	
 
 }

@@ -1,9 +1,11 @@
 /*
  * Class: animalCardController
  * Project: CS-499 Capstone
- * Purpose: Con
- * 
- * 
+ * Purpose: Acts as the controller when creating, defining actions, and how to respond for each animal card created for the main inventory
+ *    window's List View of rescue animals
+ *    
+ * Version History:
+ * - 1.0.0    22 May 2026     ARosenberg     Class defined 
  */
 
 package com.snhu.capstone.controllers;
@@ -11,6 +13,7 @@ package com.snhu.capstone.controllers;
 import java.io.IOException;
 
 import com.snhu.capstone.model.animal.RescueAnimal;
+import com.snhu.capstone.service.StageManager;
 
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
@@ -20,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.stage.Stage;
 
 public class AnimalCardCell extends ListCell< RescueAnimal >{
 	
@@ -107,13 +111,20 @@ public class AnimalCardCell extends ListCell< RescueAnimal >{
 	}
 	
 	@FXML
-	protected void editAnimal( ActionEvent event ) {
+	private void editAnimal( ActionEvent event ) {
 		
 		RescueAnimal animalToEdit = getItem();
 		
 		if( animalToEdit != null ) {
 			
-			//TODO: link behavior to clicking the editAnimal button, admin rights only
+			//Open the Edit Animal Window
+			Stage currentStage = ( Stage ) ( ( Node ) event.getSource()).getScene().getWindow();
+			StageManager.getInstance().openWindow( 
+					currentStage, 
+					"/view/editAnimal.fxml",
+					( EditAnimalController controller ) -> {
+						controller.setData( animalToEdit );
+					});
 			
 		}
 		
